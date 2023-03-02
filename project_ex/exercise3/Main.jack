@@ -1,0 +1,24 @@
+
+class Main {
+    function void main() {
+        var Board game;
+		var char key;
+		let key=80;
+        let game = Board.new();
+		/** play again when pressing p*/
+		while(key=80)
+		{
+			do game.createBoard();
+			do game.run();
+			do Output.moveCursor(11,21);
+			do Output.printString("press 'p' to play again");
+			let key=0;
+			while (~(key = 80)) {
+				let key = Keyboard.keyPressed();	
+			}
+			do Screen.clearScreen();
+		}
+		do game.dispose(); 
+        return;
+    }
+}

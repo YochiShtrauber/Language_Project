@@ -1,0 +1,179 @@
+class Board{
+
+ field Square square1,square2,square3; // the square of this game
+ field Square s;
+ field int direction; 
+ field int exit;//1=win 2=lose 0=continue
+ 
+ /** Constructs a new Square Game. */
+   constructor Board new() {
+   //create the board-3 moving squares and one square to play with
+      let square1 = Square.new(140, 0, 15);
+	  let square2 = Square.new(140, 85, 15);
+	  let square3 = Square.new(140, 165, 15);
+	  let s=Square.new(0,100,10);
+      let direction = 0;  // initial state move down
+	  let exit=0;
+      return this;
+   }
+   
+   /** display a new board*/
+   method void createBoard()
+   {
+      let direction = 0;  // initial state move down
+	  let exit=0;
+	  do setSquare(square1,140,0,15);
+	  do setSquare(square2,140,85,15);
+	  do setSquare(square3,140,165,15);
+	  do setSquare(s,0,100,10);
+      let direction = 0;  // initial state move down
+	  let exit=0;
+      return;
+   }
+   
+   /** set the squares in different position*/
+   method void setSquare(Square sq,int x, int y, int size)
+   {
+	 do sq.setX(x);
+     do sq.setY(y);
+	 do sq.setSize(size);
+	 do sq.show();
+   return;
+   }
+   
+   /** clear the board- draws the squares white*/
+   method void clearBoard()
+   {
+   	  do square1.erase();
+	  do square2.erase();
+	  do square3.erase();
+	  do s.erase();
+	  return;
+   }
+    /** Disposes this game. */
+   method void dispose() {
+      do square1.dispose();
+	  do square2.dispose();
+	  do square3.dispose();
+	  do s.dispose();
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Moves the squares down. */
+   method void moveSquare() {
+      do square1.move(); 
+	  do square2.move(); 
+	  do square3.move();
+      do Sys.wait(30);  // delays the next movement
+      return;
+   }
+    /** Moves the player square in the current direction. */
+   method void moveS() {
+      if (direction = 1) { do s.moveUp(); }
+      if (direction = 2) { do s.moveDown(); }
+      if (direction = 3) { do s.moveLeft(); }
+      if (direction = 4) { do s.moveRight(); }
+      do Sys.wait(20);  // delays the next movement
+      return;
+   }
+
+   /** Runs the game: handles the user's inputs and moves the square accordingly */
+   /** also moves the obstacle squares*/
+   method void run() {
+      var char key;  // the key currently pressed by the user
+      let exit = 0;
+      while (exit=0) {
+         // waits for a key to be pressed
+         while ((key = 0) & (exit=0)) {
+            let key = Keyboard.keyPressed();
+			let exit=isEnd(square1);
+			if(exit=0){
+			let exit=isEnd(square2);}
+			if(exit=0){
+			let exit=isEnd(square3);}
+            do moveSquare();	//moves the obstacle squares
+         }
+         if (key = 131) { let direction = 1; }   // up arrow
+         if (key = 133) { let direction = 2; }   // down arrow
+		 if (key = 130) { let direction = 3; }   // left arrow
+         if (key = 132) { let direction = 4; }   // right arrow
+         // waits for the key to be released
+         while (~(key = 0) & (exit=0)) {
+            let key = Keyboard.keyPressed();
+			do moveSquare();
+			do moveS();
+			let exit=isEnd(square1);
+			if(exit=0){
+			let exit=isEnd(square2);}
+			if(exit=0){
+			let exit=isEnd(square3);}
+         }
+     } // while
+	 if (exit=2) {
+            do Output.moveCursor(10,27);
+	        do Output.printString("Game Over :(");
+	    }
+		if (exit=1) {
+            do Output.moveCursor(10,27);
+	        do Output.printString("You Win :)");
+	    }
+     return;
+   }
+   
+   /** check if game ended*/
+   method int isEnd(Square sq)
+   {
+	/** if player square get stuck at obstacle square*/
+	  if(s.getX()>sq.getX()){
+		if(sq.getX()+sq.getSize()>s.getX())
+		{
+			if(s.getY()>sq.getY())
+			{
+				if(sq.getY()+sq.getSize()>s.getY())
+				{
+					return 2;
+				}			
+			}
+		else{
+			if(s.getY()+s.getSize()>sq.getY())
+			{
+				if(sq.getY()+sq.getSize()>s.getY()+s.getY()+s.getSize())
+				{
+					return 2;
+				}			
+			}
+		}
+		}
+		}
+	 else{
+		if(s.getX()+s.getSize()>sq.getX()){
+			if(sq.getX()+sq.getSize()>s.getX()+s.getSize())
+			{
+				if(s.getY()>sq.getY())
+				{
+				if(sq.getY()+sq.getSize()>s.getY())
+				{
+					return 2;
+				}
+				}
+				else{
+					if(s.getY()+s.getSize()>sq.getY())
+					{
+						if(sq.getY()+sq.getSize()>s.getY()+s.getY()+s.getSize())
+						{
+						return 2;
+						}
+			
+					}
+				}
+			}
+		}
+		}
+	if(s.getX()>170)
+	{
+	return 1;
+	}
+	return 0;
+   }
+}

@@ -1,0 +1,19 @@
+import scala.io.Source
+import java.io._
+
+
+object Main {
+  def main(args:Array[String]):Unit={
+  /*val lines = Source.fromFile("nisayon.txt").getLines.mkString
+  print(lines)   
+  val filename = "nisayon.txt"
+  for (line <- Source.fromFile(filename).getLines) {
+    println(line)
+}*/
+
+val pw = new PrintWriter(new File("hello.txt" ))
+pw.write("Hello, world")
+pw.close
+val pr=Source.fromFile("hello.txt").getLines.mkString
+  }
+}
